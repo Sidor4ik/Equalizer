@@ -5,9 +5,8 @@ document.addEventListener('DOMContentLoaded', () => {
   const visualizerContext = visualizerCanvas.getContext('2d');
 
 
-//to do list (fix grid and barwidth)
-
   let audioContext, analyser, source, dataArray;
+  const GRID_SIZE = 40;
 
   audioInput.addEventListener('change', handleFileSelect);
   audioElement.addEventListener('play', playAudio);
@@ -46,17 +45,18 @@ document.addEventListener('DOMContentLoaded', () => {
       visualizerContext.fillStyle = 'rgb(255, 255, 255)';
       visualizerContext.fillRect(0, 0, visualizerCanvas.width, visualizerCanvas.height);
 
-      const barWidth = (visualizerCanvas.width) / dataArray.length;
+      const barWidth = ((visualizerCanvas.width) / GRID_SIZE)-1;
       let barHeight;
       let x = 0;
 
-      for (let i = 0; i < dataArray.length; i++) {
-        barHeight = dataArray[i] / 2;
+      for (let i = 0; i < GRID_SIZE; i++) {
+			let verticalGridCount = dataArray[i] / 10
+        barHeight = (verticalGridCount)*barWidth +verticalGridCount-1;
 
         visualizerContext.fillStyle = `rgb(${barHeight + 100}, 50, 50)`;
         visualizerContext.fillRect(x, visualizerCanvas.height - barHeight, barWidth, barHeight);
 
-        x += barWidth + 10;
+        x += barWidth + 1;
       }
 
       drawGrid();
@@ -65,14 +65,14 @@ document.addEventListener('DOMContentLoaded', () => {
 
     draw();
   }
-
+  
   function drawGrid() {
-    const gridSize = 40;
-    const cellSize = visualizerCanvas.width / gridSize;
+    
+    const cellSize = visualizerCanvas.width / GRID_SIZE;
 
     visualizerContext.strokeStyle = '#ccc';
 
-    for (let i = 1; i < gridSize; i++) {
+    for (let i = 1; i < GRID_SIZE; i++) {
       const x = i * cellSize;
       visualizerContext.beginPath();
       visualizerContext.moveTo(x, 0);
@@ -80,7 +80,7 @@ document.addEventListener('DOMContentLoaded', () => {
       visualizerContext.stroke();
     }
 
-    for (let j = 1; j < gridSize; j++) {
+    for (let j = 1; j < GRID_SIZE; j++) {
       const y = j * cellSize;
       visualizerContext.beginPath();
       visualizerContext.moveTo(0, y);
